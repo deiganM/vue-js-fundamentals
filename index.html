@@ -18,7 +18,7 @@
       <button class="btn btn-primary" :disabled="newItem.length === 0" @click="saveItem">Save Item</button>
     </div>
     <ul>
-      <li v-for="(item, index) in items" :key="item">{{ item }}</li>
+      <li v-for="(item, index) in reversedItems" :class="{strikeout: item.purchased}" @click="togglePurchased(item)":key="item">{{ item.label }}</li>
       <p v-if="items.length === 0">Nice job! You've bought all your items</p>
     </ul>
   </div>
@@ -31,20 +31,42 @@
         header: 'Shopping list app',
         newItem: '',
         items: [
-          // '10 party hats',
-          // '2 board games',
-          // '20 cups',
+          {
+            label: '10 party hats',
+            purchased: false,
+            highPriority: false
+          },
+          {
+            label: '2 board games',
+            purchased: true,
+            highPriority: false
+          },
+          {
+            label: '20 cups',
+            purchased: false,
+            highPriority: true
+          },
         ],
+      },
+      computed: {
+        reversedItems() {
+          return this.items.slice(0).reverse()
+        }
       },
       methods: {
         saveItem() {
-          this.items.push(this.newItem)
+          this.items.push({
+            label: this.newItem,
+            purchased: false,
+          },);
           this.newItem = ''
         },
         changeState(newState) {
           this.state = newState
-
           this.newItem = ''
+        },
+        togglePurchased(item) {
+          item.purchased = !item.purchased
         }
       }
     })
