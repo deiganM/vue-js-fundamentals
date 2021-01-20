@@ -8,10 +8,18 @@
 </head>
 <body>
   <div id="shopping-list">
-    <h1>{{ header.toLocaleUpperCase() }}</h1>
-    <input v-model= "newItems" type="text" placeholder="Add an item">
+    <div class="header">
+      <h1>{{ header.toLocaleUpperCase() }}</h1>
+      <button v-if="state === 'default'" class="btn btn-primary" @click="changeState('edit')">Add Item</button>
+      <button v-else class="btn btn-cancel" @click="changeState('default')">Cancel</button>
+    </div>
+    <div v-if="state === 'edit'" class="add-item-form">
+      <input v-model= "newItem" type="text" placeholder="Add an item" @keyup.enter="saveItem">
+      <button class="btn btn-primary" :disabled="newItem.length === 0" @click="saveItem">Save Item</button>
+    </div>
     <ul>
       <li v-for="(item, index) in items" :key="item">{{ item }}</li>
+      <p v-if="items.length === 0">Nice job! You've bought all your items</p>
     </ul>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
@@ -19,13 +27,25 @@
     var shoppingList = new Vue({
       el: '#shopping-list',
       data: {
+        state: 'default',
         header: 'Shopping list app',
-        newItems: '',
+        newItem: '',
         items: [
-          '10 party hats',
-          '2 board games',
-          '20 cups',
+          // '10 party hats',
+          // '2 board games',
+          // '20 cups',
         ],
+      },
+      methods: {
+        saveItem() {
+          this.items.push(this.newItem)
+          this.newItem = ''
+        },
+        changeState(newState) {
+          this.state = newState
+
+          this.newItem = ''
+        }
       }
     })
   </script>
